@@ -5,8 +5,9 @@ on:
     - cron: "17 * * * *"
   workflow_dispatch:
 
-permissions:
-  contents: write
+concurrency:
+  group: repository-mirror
+  cancel-in-progress: false
 
 jobs:
   mirror:
@@ -14,13 +15,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        repo: [jekyll-fdroid, f-droid.org-transparency-log]
-    
+        repo:
+          - jekyll-fdroid
+          - f-droid.org-transparency-log
+
     steps:
+      - name: Load SSH key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.BOT_KEY }}
+
+      - name: Trust GitHub SSH host
+        run: |
+          install -d -m 700 ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
       - name: Mirror repository
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ matrix.repo }}
         run: |
           git clone --mirror "https://gitlab.com/fdroid/${REPO}.git" mirror.git
-          git -C mirror.git push --mirror "https://x-access-token:${GH_TOKEN}@github.com/f-droid/${REPO}.git"
+          git -C mirror.git push --mirror "git@github.com:f-droid/${REPO}.git"
