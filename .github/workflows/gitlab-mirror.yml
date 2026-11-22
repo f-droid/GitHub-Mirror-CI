@@ -16,8 +16,20 @@ jobs:
       fail-fast: false
       matrix:
         repo:
-          - jekyll-fdroid
+          - android-sdk-transparency-log
+          - artwork
+          - ci-images-client
+          - fdroidclient
+          - fdroiddata
           - f-droid.org-transparency-log
+          - fdroidserver
+          - fdroid-website
+          - gradle-transparency-log
+          - jekyll-fdroid
+          - privileged-extension
+          - repomaker
+          - sdkmanager
+
 
     steps:
       - name: Load SSH key
