@@ -49,5 +49,5 @@ jobs:
         run: |
           git clone --mirror "git@github.com:f-droid/${REPO}.git" mirror.git
           git -C mirror.git remote add gitlab "https://gitlab.com/fdroid/${REPO}.git"
-          git -C mirror.git fetch --prune gitlab '+refs/*:refs/*'
+          git -C mirror.git fetch --prune gitlab '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
           git -C mirror.git push --mirror origin
