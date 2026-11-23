@@ -47,7 +47,8 @@ jobs:
         env:
           REPO: ${{ matrix.repo }}
         run: |
-          git clone --mirror "git@github.com:f-droid/${REPO}.git" mirror.git
+          git init --bare mirror.git
+          git -C mirror.git remote add github "git@github.com:f-droid/${REPO}.git"
           git -C mirror.git remote add gitlab "https://gitlab.com/fdroid/${REPO}.git"
-          git -C mirror.git fetch --prune gitlab '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
-          git -C mirror.git push --mirror origin
+          git -C mirror.git fetch gitlab '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
+          git -C mirror.git push --prune github '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
